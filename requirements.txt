@@ -1,0 +1,10 @@
+tensorflow==2.13.0
+numpy
+pandas
+matplotlib
+scikit-learn
+fastapi
+uvicorn
+mlflow
+pillow
+requests
