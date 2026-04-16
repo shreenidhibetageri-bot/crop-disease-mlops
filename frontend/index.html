@@ -1,196 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crop Disease Detection</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f7f0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-        }
-        h1 {
-            color: #2d6a2d;
-            margin-bottom: 8px;
-            font-size: 28px;
-        }
-        p.subtitle {
-            color: #666;
-            margin-bottom: 30px;
-        }
-        .upload-area {
-            border: 2px dashed #2d6a2d;
-            border-radius: 12px;
-            padding: 40px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .upload-area:hover { background: #f0fff0; }
-        .upload-area p { color: #666; margin-top: 10px; }
-        input[type="file"] { display: none; }
-        #preview {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 12px;
-            margin: 16px auto;
-            display: none;
-        }
-        button {
-            background: #2d6a2d;
-            color: white;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-        button:hover { background: #1a4a1a; }
-        button:disabled { background: #999; cursor: not-allowed; }
-        .result {
-            margin-top: 24px;
-            padding: 20px;
-            border-radius: 12px;
-            display: none;
-            text-align: left;
-        }
-        .result.healthy { background: #e8f5e9; border: 2px solid #4caf50; }
-        .result.diseased { background: #ffeaea; border: 2px solid #f44336; }
-        .result h3 { font-size: 20px; margin-bottom: 12px; }
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-        .result-row:last-child { border-bottom: none; }
-        .label { color: #666; font-weight: bold; }
-        .value { color: #333; }
-        .loading { color: #666; margin-top: 16px; display: none; }
-        .emoji { font-size: 48px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crop Disease Detection | AI Smart Agriculture</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#050d05;--bg2:#0a140a;--bg3:#0f1a0f;--green:#1d9e75;--green2:#0f6e56;--green3:#5dcaa5;--border:#1a3a1a;--text:#e0e0e0;--muted:#4a7a4a;--red:#6e0f0f;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.particle{position:absolute;background:var(--green);border-radius:50%;animation:floatUp linear infinite;opacity:0;}
+@keyframes floatUp{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.4;}90%{opacity:0.4;}100%{transform:translateY(-100px);opacity:0;}}
+
+/* Top Logo Bar */
+.top-logo-bar{position:relative;z-index:101;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:12px;}
+.top-logo-img{width:100px;height:100px;background:linear-gradient(135deg,var(--green2),var(--green));border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:48px;animation:logoPulse 3s ease-in-out infinite;box-shadow:0 0 40px rgba(29,158,117,0.3);}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(29,158,117,0.3);}50%{box-shadow:0 0 70px rgba(29,158,117,0.6);}}
+.top-logo-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:1px;}
+.top-logo-sub{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
+
+/* Navbar */
+nav{position:sticky;top:0;left:0;right:0;z-index:100;background:rgba(5,13,5,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 40px;}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff;}
+.nav-logo-icon{width:30px;height:30px;background:var(--green2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:14px;transition:all 0.3s;}
+.nav-links a:hover{color:#fff;background:var(--border);}
+.nav-btn{background:var(--green2);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:14px;cursor:pointer;transition:all 0.3s;}
+.nav-btn:hover{background:var(--green);}
+
+/* Hero */
+.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:13px;color:var(--green3);margin-bottom:24px;}
+.dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.hero h1{font-size:52px;font-weight:800;color:#fff;line-height:1.1;margin-bottom:20px;}
+.hero h1 span{color:var(--green);}
+.hero p{font-size:17px;color:var(--muted);max-width:540px;margin:0 auto 40px;line-height:1.7;}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.btn-p{background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;border:none;padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(29,158,117,0.4);}
+.btn-s{background:transparent;color:#fff;border:1px solid var(--border);padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.btn-s:hover{border-color:var(--green);transform:translateY(-3px);}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px;flex-wrap:wrap;}
+.hstat-num{font-size:32px;font-weight:800;color:var(--green);}
+.hstat-label{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* Sections */
+section{position:relative;z-index:1;padding:80px 20px;}
+.si{max-width:1100px;margin:0 auto;}
+.stag{display:inline-block;background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-size:12px;padding:4px 14px;border-radius:100px;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;}
+.stitle{font-size:36px;font-weight:800;color:#fff;margin-bottom:12px;}
+.ssub{font-size:16px;color:var(--muted);max-width:500px;line-height:1.7;}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:48px;}
+.step{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:28px;text-align:center;transition:all 0.3s;}
+.step:hover{border-color:var(--green);transform:translateY(-4px);}
+.step-ico{width:52px;height:52px;background:var(--green2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
+.step h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+.step p{font-size:13px;color:var(--muted);line-height:1.6;}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:48px;}
+.fcard{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:28px;transition:all 0.3s;}
+.fcard:hover{border-color:var(--green);transform:translateY(-4px);}
+.fico{width:52px;height:52px;background:var(--bg2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;border:1px solid var(--border);}
+.fcard h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:8px;}
+.fcard p{font-size:13px;color:var(--muted);line-height:1.6;}
+.crops{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:48px;}
+.crop{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all 0.3s;}
+.crop:hover{border-color:var(--green);}
+.crop-e{font-size:28px;margin-bottom:8px;}
+.crop h4{font-size:13px;color:var(--text);font-weight:500;}
+.crop span{font-size:11px;color:var(--muted);}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px;}
+@media(max-width:768px){.dgrid{grid-template-columns:1fr;}.nav-links{display:none;}.hero h1{font-size:36px;}}
+.ucard{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:28px;}
+.uarea{border:2px dashed var(--border);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.uarea:hover,.uarea.drag{border-color:var(--green);background:var(--bg2);}
+.uico{width:64px;height:64px;background:var(--bg2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;border:1px solid var(--border);transition:all 0.3s;}
+.uarea:hover .uico{background:var(--green2);transform:scale(1.1);}
+.utitle{font-size:17px;font-weight:600;color:#fff;margin-bottom:6px;}
+.usub{font-size:13px;color:var(--muted);}
+#pw{display:none;margin-top:16px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+#preview{width:100%;max-height:250px;object-fit:cover;display:block;}
+.dbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--green2),var(--green));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px;transition:all 0.3s;}
+.dbtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(29,158,117,0.4);}
+.dbtn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+.lbar{display:none;margin-top:12px;background:var(--border);border-radius:8px;height:5px;overflow:hidden;}
+.lbar.show{display:block;}
+.lfill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green),var(--green3));border-radius:8px;animation:la 1.5s ease-in-out infinite;}
+@keyframes la{0%{width:20%;}50%{width:80%;}100%{width:20%;}}
+.rpanel{background:var(--bg3);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+.rph{padding:40px;text-align:center;color:var(--muted);}
+.rph-ico{font-size:48px;margin-bottom:16px;opacity:0.4;}
+.rh{padding:24px;display:flex;align-items:center;gap:16px;}
+.rh.healthy{background:#0a1f0a;border-bottom:1px solid var(--border);}
+.rh.diseased{background:#1f0a0a;border-bottom:1px solid #3a1a1a;}
+.rico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.healthy .rico{background:var(--green2);}
+.diseased .rico{background:var(--red);}
+.rtitle{font-size:20px;font-weight:700;color:#fff;}
+.rsub{font-size:13px;color:var(--muted);margin-top:2px;}
+.rb{padding:24px;}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.rrow:last-child{border-bottom:none;}
+.rlabel{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;}
+.rval{font-size:15px;font-weight:600;color:#fff;}
+.cbar{margin-top:16px;background:var(--border);border-radius:8px;height:8px;overflow:hidden;}
+.cfill{height:100%;background:linear-gradient(90deg,var(--green2),var(--green));border-radius:8px;transition:width 1s ease;width:0%;}
+.hsec{padding:0 24px 24px;display:none;}
+.htitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;}
+.hitem{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border-radius:10px;margin-bottom:8px;border:1px solid var(--border);}
+.hdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.hdot.healthy{background:var(--green);}
+.hdot.diseased{background:#e24b4a;}
+.htext{font-size:13px;color:var(--text);flex:1;}
+.htime{font-size:11px;color:var(--muted);}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px;align-items:start;}
+@media(max-width:768px){.agrid{grid-template-columns:1fr;}}
+.atext p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+.tcard{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:28px;}
+.ttitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:16px;}
+.tm{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.tm:last-child{border-bottom:none;}
+.tav{width:36px;height:36px;background:var(--green2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.tname{font-size:15px;color:#fff;font-weight:500;}
+.tbadges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.tbadge{background:var(--bg2);border:1px solid var(--border);color:var(--green3);font-size:12px;padding:4px 12px;border-radius:100px;}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20px;text-align:center;position:relative;z-index:1;}
+.flogo{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;}
+.fsub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.flinks{display:flex;gap:24px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+.flinks a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.3s;}
+.flinks a:hover{color:var(--green);}
+.fbottom{font-size:12px;color:var(--muted);padding-top:24px;border-top:1px solid var(--border);}
+input[type="file"]{display:none;}
+</style>
 </head>
 <body>
-<div class="container">
-    <div class="emoji">🌿</div>
-    <h1>Crop Disease Detection</h1>
-    <p class="subtitle">Upload a crop leaf image to detect diseases instantly</p>
+<div id="particles"></div>
 
-    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-        <div class="emoji">📷</div>
-        <p>Click here to upload a leaf image</p>
-        <p style="font-size:12px; margin-top:8px">Supports: JPG, PNG</p>
-    </div>
-
-    <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
-    <img id="preview" alt="Preview">
-
-    <button id="predictBtn" onclick="predict()" disabled>
-        🔍 Detect Disease
-    </button>
-
-    <div class="loading" id="loading">
-        ⏳ Analyzing image... please wait
-    </div>
-
-    <div class="result" id="result">
-        <h3 id="resultTitle"></h3>
-        <div class="result-row">
-            <span class="label">🌱 Plant:</span>
-            <span class="value" id="plantName"></span>
-        </div>
-        <div class="result-row">
-            <span class="label">🦠 Disease:</span>
-            <span class="value" id="diseaseName"></span>
-        </div>
-        <div class="result-row">
-            <span class="label">💊 Status:</span>
-            <span class="value" id="healthStatus"></span>
-        </div>
-        <div class="result-row">
-            <span class="label">📊 Confidence:</span>
-            <span class="value" id="confidence"></span>
-        </div>
-    </div>
+<!-- Top Logo Bar -->
+<div class="top-logo-bar">
+  <div class="top-logo-img">🌿</div>
+  <div class="top-logo-name">CropAI</div>
+  <div class="top-logo-sub">AI-Powered Crop Disease Detection</div>
 </div>
 
+<!-- Navbar -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🌿</div>
+      CropAI
+    </div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#crops">Crops</a>
+      <a href="#detect">Detect</a>
+      <a href="#about">About</a>
+    </div>
+    <button class="nav-btn" onclick="document.getElementById('detect').scrollIntoView({behavior:'smooth'})">Try Now</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div style="position:relative;z-index:1;">
+    <div class="hero-badge"><span class="dot"></span>AI-Powered Smart Agriculture</div>
+    <h1>Detect Crop Diseases<br><span>Instantly with AI</span></h1>
+    <p>Upload a leaf image and our deep learning model identifies diseases across 38 classes in seconds. Powered by EfficientNet on Kubernetes.</p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="document.getElementById('detect').scrollIntoView({behavior:'smooth'})">🔍 Start Detection</button>
+      <button class="btn-s" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">Learn More</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-num">54K+</div><div class="hstat-label">Training images</div></div>
+      <div><div class="hstat-num">38</div><div class="hstat-label">Disease classes</div></div>
+      <div><div class="hstat-num">14</div><div class="hstat-label">Crop types</div></div>
+      <div><div class="hstat-num">95%+</div><div class="hstat-label">Target accuracy</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- How it Works -->
+<section id="how">
+  <div class="si">
+    <div class="stag">Process</div>
+    <div class="stitle">How it works</div>
+    <div class="ssub">Four simple steps to detect crop diseases using our AI system</div>
+    <div class="steps">
+      <div class="step"><div class="step-ico">📷</div><h3>Upload image</h3><p>Take a photo of the crop leaf and upload it to our system</p></div>
+      <div class="step"><div class="step-ico">🧠</div><h3>AI analyzes</h3><p>EfficientNet model analyzes the image in milliseconds</p></div>
+      <div class="step"><div class="step-ico">📊</div><h3>Get results</h3><p>Receive detailed diagnosis with disease name and confidence score</p></div>
+      <div class="step"><div class="step-ico">💊</div><h3>Take action</h3><p>Use the diagnosis to treat the disease and save your crops</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" style="background:var(--bg2);">
+  <div class="si">
+    <div class="stag">Features</div>
+    <div class="stitle">Why choose CropAI</div>
+    <div class="ssub">Built with cutting-edge MLOps technology for reliable and scalable detection</div>
+    <div class="features">
+      <div class="fcard"><div class="fico">🧠</div><h3>Deep learning model</h3><p>EfficientNetB0 trained on 54,000+ images for accurate disease classification</p></div>
+      <div class="fcard"><div class="fico">🐳</div><h3>Docker containerized</h3><p>Fully containerized ensuring consistent performance everywhere</p></div>
+      <div class="fcard"><div class="fico">☸️</div><h3>Kubernetes scaled</h3><p>Auto-scales to handle thousands of requests with zero downtime</p></div>
+      <div class="fcard"><div class="fico">⚡</div><h3>Real-time detection</h3><p>Get disease predictions in milliseconds through FastAPI backend</p></div>
+      <div class="fcard"><div class="fico">📈</div><h3>MLflow tracking</h3><p>Full experiment tracking and model versioning with MLflow registry</p></div>
+      <div class="fcard"><div class="fico">🌿</div><h3>38 disease classes</h3><p>Detects 38 different crop diseases across 14 crop types accurately</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Crops -->
+<section id="crops">
+  <div class="si">
+    <div class="stag">Supported crops</div>
+    <div class="stitle">14 crop types detected</div>
+    <div class="ssub">Our model can identify diseases in all these crops</div>
+    <div class="crops">
+      <div class="crop"><div class="crop-e">🍎</div><h4>Apple</h4><span>4 classes</span></div>
+      <div class="crop"><div class="crop-e">🍇</div><h4>Grape</h4><span>4 classes</span></div>
+      <div class="crop"><div class="crop-e">🍅</div><h4>Tomato</h4><span>10 classes</span></div>
+      <div class="crop"><div class="crop-e">🥔</div><h4>Potato</h4><span>3 classes</span></div>
+      <div class="crop"><div class="crop-e">🌽</div><h4>Corn</h4><span>4 classes</span></div>
+      <div class="crop"><div class="crop-e">🍑</div><h4>Peach</h4><span>2 classes</span></div>
+      <div class="crop"><div class="crop-e">🍓</div><h4>Strawberry</h4><span>2 classes</span></div>
+      <div class="crop"><div class="crop-e">🫐</div><h4>Blueberry</h4><span>1 class</span></div>
+      <div class="crop"><div class="crop-e">🍒</div><h4>Cherry</h4><span>2 classes</span></div>
+      <div class="crop"><div class="crop-e">🫑</div><h4>Pepper</h4><span>2 classes</span></div>
+      <div class="crop"><div class="crop-e">🟠</div><h4>Orange</h4><span>1 class</span></div>
+      <div class="crop"><div class="crop-e">🌱</div><h4>Soybean</h4><span>1 class</span></div>
+      <div class="crop"><div class="crop-e">🌿</div><h4>Squash</h4><span>1 class</span></div>
+      <div class="crop"><div class="crop-e">🍓</div><h4>Raspberry</h4><span>1 class</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Detect -->
+<section id="detect" style="background:var(--bg2);">
+  <div class="si">
+    <div class="stag">Detection</div>
+    <div class="stitle">Detect disease now</div>
+    <div class="ssub">Upload a crop leaf image and get instant AI-powered diagnosis</div>
+    <div class="dgrid">
+      <div class="ucard">
+        <div class="uarea" id="ua" onclick="document.getElementById('fi').click()">
+          <div class="uico">📷</div>
+          <div class="utitle">Upload leaf image</div>
+          <p class="usub">Click or drag and drop · JPG, PNG</p>
+        </div>
+        <input type="file" id="fi" accept="image/*" onchange="handleFile(event)">
+        <div id="pw"><img id="preview" alt="Preview"></div>
+        <div class="lbar" id="lb"><div class="lfill"></div></div>
+        <button class="dbtn" id="db" onclick="predict()" disabled>🔍 Detect Disease</button>
+      </div>
+      <div class="rpanel" id="rp">
+        <div class="rph" id="rph">
+          <div class="rph-ico">🌿</div>
+          <p style="font-size:15px;">Upload an image to see results here</p>
+        </div>
+        <div id="rc" style="display:none;">
+          <div class="rh" id="rh">
+            <div class="rico" id="ri"></div>
+            <div><div class="rtitle" id="rt"></div><div class="rsub" id="rs"></div></div>
+          </div>
+          <div class="rb">
+            <div class="rrow"><span class="rlabel">🌱 Plant</span><span class="rval" id="pn"></span></div>
+            <div class="rrow"><span class="rlabel">🦠 Disease</span><span class="rval" id="dn"></span></div>
+            <div class="rrow"><span class="rlabel">💊 Status</span><span class="rval" id="hs"></span></div>
+            <div class="rrow"><span class="rlabel">📊 Confidence</span><span class="rval" id="ct"></span></div>
+            <div class="cbar"><div class="cfill" id="cf"></div></div>
+          </div>
+        </div>
+        <div class="hsec" id="hs2">
+          <div class="htitle">Recent predictions</div>
+          <div id="hl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="si">
+    <div class="stag">About</div>
+    <div class="stitle">About this project</div>
+    <div class="agrid">
+      <div class="atext">
+        <p>This is a final year B.E project from the Department of Information Science and Engineering at Atria Institute of Technology, Bengaluru.</p>
+        <p>We built a complete MLOps pipeline using Kubernetes for scalable deep learning-driven crop disease detection in smart agriculture.</p>
+        <p>The system uses EfficientNetB0 transfer learning trained on the PlantVillage dataset with 54,000+ images across 38 disease classes.</p>
+        <div class="tbadges">
+          <span class="tbadge">Python</span>
+          <span class="tbadge">TensorFlow</span>
+          <span class="tbadge">EfficientNet</span>
+          <span class="tbadge">FastAPI</span>
+          <span class="tbadge">Docker</span>
+          <span class="tbadge">Kubernetes</span>
+          <span class="tbadge">MLflow</span>
+          <span class="tbadge">Prometheus</span>
+          <span class="tbadge">Grafana</span>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="ttitle">Our team</div>
+        <div class="tm"><div class="tav">S</div><div><div class="tname">Shreenidhi</div></div></div>
+        <div class="tm"><div class="tav">S</div><div><div class="tname">Suvarna</div></div></div>
+        <div class="tm"><div class="tav">S</div><div><div class="tname">Shravan</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="flogo">🌿 CropAI</div>
+  <div class="fsub">AI-Powered Crop Disease Detection System</div>
+  <div class="flinks">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#crops">Crops</a>
+    <a href="#detect">Detect</a>
+    <a href="#about">About</a>
+  </div>
+  <div class="fbottom">
+    Built with ❤️ by Shreenidhi, Suvarna & Shravan · Atria Institute of Technology · ISE · 2025-26
+  </div>
+</footer>
+
 <script>
-    let selectedFile = null;
-
-    function previewImage(event) {
-        selectedFile = event.target.files[0];
-        if (!selectedFile) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('preview');
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(selectedFile);
-        document.getElementById('predictBtn').disabled = false;
-    }
-
-    async function predict() {
-        if (!selectedFile) return;
-
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('result').style.display = 'none';
-        document.getElementById('predictBtn').disabled = true;
-
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-
-        try {
-            const response = await fetch('http://localhost:8000/predict', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            document.getElementById('plantName').textContent    = data.plant;
-            document.getElementById('diseaseName').textContent  = data.disease;
-            document.getElementById('healthStatus').textContent = data.health_status;
-            document.getElementById('confidence').textContent   = data.confidence;
-
-            const resultDiv = document.getElementById('result');
-            const resultTitle = document.getElementById('resultTitle');
-
-            if (data.health_status === 'Healthy') {
-                resultDiv.className = 'result healthy';
-                resultTitle.textContent = '✅ Plant is Healthy!';
-            } else {
-                resultDiv.className = 'result diseased';
-                resultTitle.textContent = '⚠️ Disease Detected!';
-            }
-
-            resultDiv.style.display = 'block';
-
-        } catch (error) {
-            alert('Error connecting to API. Make sure the server is running!');
-        }
-
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('predictBtn').disabled = false;
-    }
+let sel=null,hist=[];
+const ua=document.getElementById('ua');
+ua.addEventListener('dragover',e=>{e.preventDefault();ua.classList.add('drag');});
+ua.addEventListener('dragleave',()=>ua.classList.remove('drag'));
+ua.addEventListener('drop',e=>{e.preventDefault();ua.classList.remove('drag');if(e.dataTransfer.files[0])proc(e.dataTransfer.files[0]);});
+function handleFile(e){if(e.target.files[0])proc(e.target.files[0]);}
+function proc(f){
+  sel=f;
+  const r=new FileReader();
+  r.onload=e=>{document.getElementById('preview').src=e.target.result;document.getElementById('pw').style.display='block';};
+  r.readAsDataURL(f);
+  document.getElementById('db').disabled=false;
+  document.getElementById('rc').style.display='none';
+  document.getElementById('rph').style.display='block';
+}
+async function predict(){
+  if(!sel)return;
+  document.getElementById('lb').classList.add('show');
+  document.getElementById('db').disabled=true;
+  document.getElementById('rph').style.display='none';
+  document.getElementById('rc').style.display='none';
+  const fd=new FormData();fd.append('file',sel);
+  try{
+    const res=await fetch('http://localhost:8000/predict',{method:'POST',body:fd});
+    const d=await res.json();
+    const ok=d.health_status==='Healthy';
+    const c=parseFloat(d.confidence);
+    document.getElementById('rh').className='rh '+(ok?'healthy':'diseased');
+    document.getElementById('ri').textContent=ok?'✅':'⚠️';
+    document.getElementById('rt').textContent=ok?'Plant is Healthy!':'Disease Detected!';
+    document.getElementById('rs').textContent=ok?'No disease found':'Treatment recommended';
+    document.getElementById('pn').textContent=d.plant;
+    document.getElementById('dn').textContent=d.disease;
+    document.getElementById('hs').textContent=d.health_status;
+    document.getElementById('ct').textContent=d.confidence;
+    document.getElementById('rc').style.display='block';
+    setTimeout(()=>{document.getElementById('cf').style.width=c+'%';},300);
+    hist.unshift({plant:d.plant,disease:d.disease,ok,time:new Date().toLocaleTimeString()});
+    if(hist.length>5)hist.pop();
+    updateHist();
+  }catch(e){
+    document.getElementById('rph').style.display='block';
+    alert('Error connecting to API. Make sure server is running on port 8000!');
+  }
+  document.getElementById('lb').classList.remove('show');
+  document.getElementById('db').disabled=false;
+}
+function updateHist(){
+  if(!hist.length)return;
+  document.getElementById('hs2').style.display='block';
+  document.getElementById('hl').innerHTML=hist.map(h=>`<div class="hitem"><div class="hdot ${h.ok?'healthy':'diseased'}"></div><div class="htext">${h.plant} — ${h.disease}</div><div class="htime">${h.time}</div></div>`).join('');
+}
+function mkParticles(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<25;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*12}s;`;
+    c.appendChild(p);
+  }
+}
+mkParticles();
 </script>
 </body>
 </html>
