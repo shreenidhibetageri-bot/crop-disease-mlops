@@ -3,16 +3,16 @@ import json
 import numpy as np
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 import tensorflow as tf
 from PIL import Image
 import io
+from src.dosage import get_dosage
 
 # ── App Setup ───────────────────────────────────────────────
 app = FastAPI(
     title="Crop Disease Detection API",
-    description="API for detecting crop diseases using Deep Learning",
-    version="1.0.0"
+    description="API for detecting crop diseases with dosage recommendations",
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -23,7 +23,7 @@ app.add_middleware(
 )
 
 # ── Load Model ───────────────────────────────────────────────
-MODEL_PATH      = "models/crop_disease_model.h5"
+MODEL_PATH       = "models/crop_disease_model.h5"
 CLASS_NAMES_PATH = "models/class_names.json"
 
 print("Loading model...")
@@ -37,7 +37,6 @@ print(f"Total classes: {len(class_names)}")
 
 # ── Helper Function ──────────────────────────────────────────
 def preprocess_image(image_bytes):
-    """Convert uploaded image to model input format"""
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     img = img.resize((224, 224))
     img_array = np.array(img) / 255.0
@@ -50,7 +49,7 @@ def preprocess_image(image_bytes):
 def home():
     return {
         "message": "Crop Disease Detection API is running!",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "endpoints": {
             "predict": "/predict",
             "health":  "/health",
@@ -68,14 +67,9 @@ def health_check():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    """
-    Upload a crop leaf image and get disease prediction
-    """
     try:
-        # Read uploaded image
+        # Read and preprocess image
         image_bytes = await file.read()
-
-        # Preprocess image
         img_array = preprocess_image(image_bytes)
 
         # Make prediction
@@ -86,23 +80,34 @@ async def predict(file: UploadFile = File(...)):
         # Get class name
         predicted_class = class_names[str(predicted_index)]
 
-        # Check if healthy or diseased
+        # Get dosage recommendation
+        dosage_info = get_dosage(predicted_class)
+
+        # Check healthy or diseased
         if "healthy" in predicted_class.lower():
             status = "Healthy"
         else:
             status = "Diseased"
 
-        # Format the result nicely
-        plant_name  = predicted_class.split("___")[0].replace("_", " ")
-        disease_name = predicted_class.split("___")[1].replace("_", " ") if "___" in predicted_class else "Unknown"
+        # Format result
+        plant_name   = predicted_class.split("___")[0].replace("_", " ")
+        disease_name = predicted_class.split("___")[1].replace("_", " ") \
+                       if "___" in predicted_class else "Unknown"
 
         return {
-            "status":       "success",
-            "plant":        plant_name,
-            "disease":      disease_name,
+            "status":        "success",
+            "plant":         plant_name,
+            "disease":       disease_name,
             "health_status": status,
-            "confidence":   f"{confidence:.2f}%",
-            "raw_class":    predicted_class
+            "confidence":    f"{confidence:.2f}%",
+            "raw_class":     predicted_class,
+            "recommendation": {
+                "medicine":   dosage_info["medicine"],
+                "dosage":     dosage_info["dosage"],
+                "frequency":  dosage_info["frequency"],
+                "precaution": dosage_info["precaution"],
+                "severity":   dosage_info["severity"]
+            }
         }
 
     except Exception as e:
@@ -113,7 +118,6 @@ async def predict(file: UploadFile = File(...)):
 
 @app.get("/classes")
 def get_classes():
-    """Get all disease classes the model can detect"""
     return {
         "total_classes": len(class_names),
         "classes": list(class_names.values())
