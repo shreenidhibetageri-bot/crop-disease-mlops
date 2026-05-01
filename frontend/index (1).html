@@ -12,27 +12,16 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);ov
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 .particle{position:absolute;background:var(--green);border-radius:50%;animation:floatUp linear infinite;opacity:0;}
 @keyframes floatUp{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.4;}90%{opacity:0.4;}100%{transform:translateY(-100px);opacity:0;}}
-
-/* Top Logo Bar */
-.top-logo-bar{position:relative;z-index:101;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:12px;}
-.top-logo-img{width:100px;height:100px;background:linear-gradient(135deg,var(--green2),var(--green));border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:48px;animation:logoPulse 3s ease-in-out infinite;box-shadow:0 0 40px rgba(29,158,117,0.3);}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(29,158,117,0.3);}50%{box-shadow:0 0 70px rgba(29,158,117,0.6);}}
-.top-logo-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:1px;}
-.top-logo-sub{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
-
-/* Navbar */
-nav{position:sticky;top:0;left:0;right:0;z-index:100;background:rgba(5,13,5,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 40px;}
-.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
-.nav-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:#fff;}
-.nav-logo-icon{width:30px;height:30px;background:var(--green2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,13,5,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 40px;}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;color:#fff;}
+.nav-logo-icon{width:36px;height:36px;background:var(--green2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .nav-links{display:flex;gap:4px;}
 .nav-links a{color:var(--muted);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:14px;transition:all 0.3s;}
 .nav-links a:hover{color:#fff;background:var(--border);}
 .nav-btn{background:var(--green2);color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:14px;cursor:pointer;transition:all 0.3s;}
 .nav-btn:hover{background:var(--green);}
-
-/* Hero */
-.hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;position:relative;z-index:1;}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 20px 60px;position:relative;z-index:1;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:13px;color:var(--green3);margin-bottom:24px;}
 .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
@@ -47,8 +36,6 @@ nav{position:sticky;top:0;left:0;right:0;z-index:100;background:rgba(5,13,5,0.95
 .hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px;flex-wrap:wrap;}
 .hstat-num{font-size:32px;font-weight:800;color:var(--green);}
 .hstat-label{font-size:13px;color:var(--muted);margin-top:4px;}
-
-/* Sections */
 section{position:relative;z-index:1;padding:80px 20px;}
 .si{max-width:1100px;margin:0 auto;}
 .stag{display:inline-block;background:var(--bg3);border:1px solid var(--border);color:var(--green3);font-size:12px;padding:4px 14px;border-radius:100px;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;}
@@ -130,30 +117,18 @@ section{position:relative;z-index:1;padding:80px 20px;}
 footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20px;text-align:center;position:relative;z-index:1;}
 .flogo{font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;}
 .fsub{font-size:13px;color:var(--muted);margin-bottom:24px;}
-.flinks{display:flex;gap:24px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+.flinks{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;}
 .flinks a{color:var(--muted);text-decoration:none;font-size:14px;transition:color 0.3s;}
 .flinks a:hover{color:var(--green);}
-.fbottom{font-size:12px;color:var(--muted);padding-top:24px;border-top:1px solid var(--border);}
 input[type="file"]{display:none;}
 </style>
 </head>
 <body>
 <div id="particles"></div>
 
-<!-- Top Logo Bar -->
-<div class="top-logo-bar">
-  <div class="top-logo-img">🌿</div>
-  <div class="top-logo-name">CropAI</div>
-  <div class="top-logo-sub">AI-Powered Crop Disease Detection</div>
-</div>
-
-<!-- Navbar -->
 <nav>
   <div class="nav-inner">
-    <div class="nav-logo">
-      <div class="nav-logo-icon">🌿</div>
-      CropAI
-    </div>
+    <div class="nav-logo"><div class="nav-logo-icon">🌿</div>CropAI</div>
     <div class="nav-links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
@@ -165,7 +140,6 @@ input[type="file"]{display:none;}
   </div>
 </nav>
 
-<!-- Hero -->
 <div class="hero">
   <div style="position:relative;z-index:1;">
     <div class="hero-badge"><span class="dot"></span>AI-Powered Smart Agriculture</div>
@@ -184,7 +158,6 @@ input[type="file"]{display:none;}
   </div>
 </div>
 
-<!-- How it Works -->
 <section id="how">
   <div class="si">
     <div class="stag">Process</div>
@@ -199,7 +172,6 @@ input[type="file"]{display:none;}
   </div>
 </section>
 
-<!-- Features -->
 <section id="features" style="background:var(--bg2);">
   <div class="si">
     <div class="stag">Features</div>
@@ -216,7 +188,6 @@ input[type="file"]{display:none;}
   </div>
 </section>
 
-<!-- Crops -->
 <section id="crops">
   <div class="si">
     <div class="stag">Supported crops</div>
@@ -241,7 +212,6 @@ input[type="file"]{display:none;}
   </div>
 </section>
 
-<!-- Detect -->
 <section id="detect" style="background:var(--bg2);">
   <div class="si">
     <div class="stag">Detection</div>
@@ -259,6 +229,7 @@ input[type="file"]{display:none;}
         <div class="lbar" id="lb"><div class="lfill"></div></div>
         <button class="dbtn" id="db" onclick="predict()" disabled>🔍 Detect Disease</button>
       </div>
+
       <div class="rpanel" id="rp">
         <div class="rph" id="rph">
           <div class="rph-ico">🌿</div>
@@ -286,7 +257,6 @@ input[type="file"]{display:none;}
   </div>
 </section>
 
-<!-- About -->
 <section id="about">
   <div class="si">
     <div class="stag">About</div>
@@ -318,7 +288,6 @@ input[type="file"]{display:none;}
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <div class="flogo">🌿 CropAI</div>
   <div class="fsub">AI-Powered Crop Disease Detection System</div>
@@ -329,70 +298,94 @@ input[type="file"]{display:none;}
     <a href="#detect">Detect</a>
     <a href="#about">About</a>
   </div>
-  <div class="fbottom">
-    Built with ❤️ by Shreenidhi, Suvarna & Shravan · Atria Institute of Technology · ISE · 2025-26
-  </div>
 </footer>
 
 <script>
-let sel=null,hist=[];
-const ua=document.getElementById('ua');
-ua.addEventListener('dragover',e=>{e.preventDefault();ua.classList.add('drag');});
-ua.addEventListener('dragleave',()=>ua.classList.remove('drag'));
-ua.addEventListener('drop',e=>{e.preventDefault();ua.classList.remove('drag');if(e.dataTransfer.files[0])proc(e.dataTransfer.files[0]);});
-function handleFile(e){if(e.target.files[0])proc(e.target.files[0]);}
-function proc(f){
-  sel=f;
-  const r=new FileReader();
-  r.onload=e=>{document.getElementById('preview').src=e.target.result;document.getElementById('pw').style.display='block';};
+let sel = null, hist = [];
+
+const ua = document.getElementById('ua');
+ua.addEventListener('dragover', e => { e.preventDefault(); ua.classList.add('drag'); });
+ua.addEventListener('dragleave', () => ua.classList.remove('drag'));
+ua.addEventListener('drop', e => {
+  e.preventDefault();
+  ua.classList.remove('drag');
+  if (e.dataTransfer.files[0]) proc(e.dataTransfer.files[0]);
+});
+
+function handleFile(e) { if (e.target.files[0]) proc(e.target.files[0]); }
+
+function proc(f) {
+  sel = f;
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('preview').src = e.target.result;
+    document.getElementById('pw').style.display = 'block';
+  };
   r.readAsDataURL(f);
-  document.getElementById('db').disabled=false;
-  document.getElementById('rc').style.display='none';
-  document.getElementById('rph').style.display='block';
+  document.getElementById('db').disabled = false;
+  document.getElementById('rc').style.display = 'none';
+  document.getElementById('rph').style.display = 'block';
 }
-async function predict(){
-  if(!sel)return;
+
+async function predict() {
+  if (!sel) return;
   document.getElementById('lb').classList.add('show');
-  document.getElementById('db').disabled=true;
-  document.getElementById('rph').style.display='none';
-  document.getElementById('rc').style.display='none';
-  const fd=new FormData();fd.append('file',sel);
-  try{
-    const res=await fetch('http://localhost:8000/predict',{method:'POST',body:fd});
-    const d=await res.json();
-    const ok=d.health_status==='Healthy';
-    const c=parseFloat(d.confidence);
-    document.getElementById('rh').className='rh '+(ok?'healthy':'diseased');
-    document.getElementById('ri').textContent=ok?'✅':'⚠️';
-    document.getElementById('rt').textContent=ok?'Plant is Healthy!':'Disease Detected!';
-    document.getElementById('rs').textContent=ok?'No disease found':'Treatment recommended';
-    document.getElementById('pn').textContent=d.plant;
-    document.getElementById('dn').textContent=d.disease;
-    document.getElementById('hs').textContent=d.health_status;
-    document.getElementById('ct').textContent=d.confidence;
-    document.getElementById('rc').style.display='block';
-    setTimeout(()=>{document.getElementById('cf').style.width=c+'%';},300);
-    hist.unshift({plant:d.plant,disease:d.disease,ok,time:new Date().toLocaleTimeString()});
-    if(hist.length>5)hist.pop();
+  document.getElementById('db').disabled = true;
+  document.getElementById('rph').style.display = 'none';
+  document.getElementById('rc').style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('file', sel);
+
+  try {
+    const res = await fetch('http://localhost:8000/predict', {
+      method: 'POST',
+      body: fd,
+      mode: 'cors'
+    });
+
+    const d = await res.json();
+    const ok = d.health_status === 'Healthy';
+    const c = parseFloat(d.confidence);
+
+    document.getElementById('rh').className = 'rh ' + (ok ? 'healthy' : 'diseased');
+    document.getElementById('ri').textContent = ok ? '✅' : '⚠️';
+    document.getElementById('rt').textContent = ok ? 'Plant is Healthy!' : 'Disease Detected!';
+    document.getElementById('rs').textContent = ok ? 'No disease found' : 'Treatment recommended';
+    document.getElementById('pn').textContent = d.plant;
+    document.getElementById('dn').textContent = d.disease;
+    document.getElementById('hs').textContent = d.health_status;
+    document.getElementById('ct').textContent = d.confidence;
+    document.getElementById('rc').style.display = 'block';
+    setTimeout(() => { document.getElementById('cf').style.width = c + '%'; }, 300);
+
+    hist.unshift({ plant: d.plant, disease: d.disease, ok, time: new Date().toLocaleTimeString() });
+    if (hist.length > 5) hist.pop();
     updateHist();
-  }catch(e){
-    document.getElementById('rph').style.display='block';
-    alert('Error connecting to API. Make sure server is running on port 8000!');
+
+  } catch (e) {
+    document.getElementById('rph').style.display = 'block';
+    alert('Error connecting to API. Make sure uvicorn server is running on port 8000!');
   }
+
   document.getElementById('lb').classList.remove('show');
-  document.getElementById('db').disabled=false;
+  document.getElementById('db').disabled = false;
 }
-function updateHist(){
-  if(!hist.length)return;
-  document.getElementById('hs2').style.display='block';
-  document.getElementById('hl').innerHTML=hist.map(h=>`<div class="hitem"><div class="hdot ${h.ok?'healthy':'diseased'}"></div><div class="htext">${h.plant} — ${h.disease}</div><div class="htime">${h.time}</div></div>`).join('');
+
+function updateHist() {
+  if (!hist.length) return;
+  document.getElementById('hs2').style.display = 'block';
+  document.getElementById('hl').innerHTML = hist.map(h =>
+    `<div class="hitem"><div class="hdot ${h.ok ? 'healthy' : 'diseased'}"></div><div class="htext">${h.plant} — ${h.disease}</div><div class="htime">${h.time}</div></div>`
+  ).join('');
 }
-function mkParticles(){
-  const c=document.getElementById('particles');
-  for(let i=0;i<25;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.cssText=`left:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*12}s;`;
+
+function mkParticles() {
+  const c = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random() * 100}%;width:${Math.random() * 3 + 1}px;height:${Math.random() * 3 + 1}px;animation-duration:${Math.random() * 12 + 8}s;animation-delay:${Math.random() * 12}s;`;
     c.appendChild(p);
   }
 }
