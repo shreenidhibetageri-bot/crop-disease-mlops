@@ -9,6 +9,7 @@ import tensorflow as tf
 from PIL import Image
 import io
 from src.dosage import get_dosage
+from src.database import save_prediction, get_prediction_stats, get_recent_predictions
 from prometheus_client import (
     Counter, Histogram, Gauge,
     generate_latest, CONTENT_TYPE_LATEST
@@ -113,10 +114,12 @@ def home():
         "version": "2.0.0",
         "accuracy": "97.76%",
         "endpoints": {
-            "predict":  "/predict",
-            "health":   "/health",
-            "metrics":  "/metrics",
-            "docs":     "/docs"
+            "predict":          "/predict",
+            "health":           "/health",
+            "metrics":          "/metrics",
+            "history":          "/history",
+            "prediction-stats": "/prediction-stats",
+            "docs":             "/docs"
         }
     }
 
@@ -178,6 +181,16 @@ async def predict(file: UploadFile = File(...)):
 
         duration = time.time() - start_time
 
+        # ── Save to MongoDB ──────────────────────────────────
+        save_prediction({
+            "plant":         plant_name,
+            "disease":       disease_name,
+            "health_status": status,
+            "confidence":    f"{confidence:.2f}%",
+            "raw_class":     predicted_class,
+            "recommendation": dosage_info
+        })
+
         return {
             "status":        "success",
             "plant":         plant_name,
@@ -215,7 +228,7 @@ def get_classes():
 
 @app.get("/stats")
 def get_stats():
-    """Get prediction statistics"""
+    """Get system statistics"""
     return {
         "model_accuracy": "97.76%",
         "total_classes":  len(class_names),
@@ -224,3 +237,18 @@ def get_stats():
         "deployment":     "Kubernetes + Docker",
         "monitoring":     "Prometheus + Grafana"
     }
+
+@app.get("/history")
+def get_history():
+    """Get prediction history from MongoDB"""
+    predictions = get_recent_predictions(10)
+    return {
+        "total":       len(predictions),
+        "predictions": predictions
+    }
+
+@app.get("/prediction-stats")
+def prediction_statistics():
+    """Get prediction statistics from MongoDB"""
+    stats = get_prediction_stats()
+    return stats
