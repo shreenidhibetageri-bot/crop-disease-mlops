@@ -319,4 +319,4 @@ def get_dosage(class_name):
             "frequency": "As recommended by expert",
             "precaution": "Please consult your local agricultural department for specific treatment.",
             "severity": "Unknown"
-        
+        }
