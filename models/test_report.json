@@ -1,0 +1,234 @@
+{
+  "timestamp": "2026-05-01T13:19:22.372327",
+  "total": 45,
+  "passed": 44,
+  "failed": 1,
+  "pass_rate": "97.8%",
+  "results": [
+    {
+      "name": "API is running",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "API version is 2.0.0",
+      "status": "\u2705 PASS",
+      "details": "Version: 2.0.0"
+    },
+    {
+      "name": "API has predict endpoint",
+      "status": "\u2705 PASS",
+      "details": "Endpoint /predict found"
+    },
+    {
+      "name": "Health endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Model is loaded",
+      "status": "\u2705 PASS",
+      "details": "Model: loaded"
+    },
+    {
+      "name": "38 classes loaded",
+      "status": "\u2705 PASS",
+      "details": "Classes: 38"
+    },
+    {
+      "name": "Accuracy is 97.76%",
+      "status": "\u2705 PASS",
+      "details": "Accuracy: 97.76%"
+    },
+    {
+      "name": "Classes endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Returns 38 classes",
+      "status": "\u2705 PASS",
+      "details": "Total: 38"
+    },
+    {
+      "name": "Tomato class exists",
+      "status": "\u2705 PASS",
+      "details": "Tomato diseases found"
+    },
+    {
+      "name": "Potato class exists",
+      "status": "\u2705 PASS",
+      "details": "Potato diseases found"
+    },
+    {
+      "name": "Stats endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Accuracy in stats",
+      "status": "\u2705 PASS",
+      "details": "Accuracy: 97.76%"
+    },
+    {
+      "name": "Kubernetes in deployment",
+      "status": "\u2705 PASS",
+      "details": "Deployment: Kubernetes + Docker"
+    },
+    {
+      "name": "Metrics endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Model accuracy metric exists",
+      "status": "\u2705 PASS",
+      "details": "Metric found in Prometheus output"
+    },
+    {
+      "name": "Request counter exists",
+      "status": "\u2705 PASS",
+      "details": "Request counter found"
+    },
+    {
+      "name": "Accuracy value is 97.76",
+      "status": "\u2705 PASS",
+      "details": "Accuracy value correct"
+    },
+    {
+      "name": "History endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "History returns data",
+      "status": "\u2705 PASS",
+      "details": "Total predictions: 1"
+    },
+    {
+      "name": "Prediction stats works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Prediction endpoint works",
+      "status": "\u2705 PASS",
+      "details": "Status: 200"
+    },
+    {
+      "name": "Prediction returns plant name",
+      "status": "\u2705 PASS",
+      "details": "Plant: Apple"
+    },
+    {
+      "name": "Prediction returns disease",
+      "status": "\u2705 PASS",
+      "details": "Disease: Apple scab"
+    },
+    {
+      "name": "Prediction returns confidence",
+      "status": "\u2705 PASS",
+      "details": "Confidence: 99.72%"
+    },
+    {
+      "name": "Prediction returns dosage",
+      "status": "\u2705 PASS",
+      "details": "Medicine: Captan 50 WP or Mancozeb 75 WP"
+    },
+    {
+      "name": "Health status returned",
+      "status": "\u2705 PASS",
+      "details": "Status: Diseased"
+    },
+    {
+      "name": "File exists: api/main.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: src/train.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: src/preprocess.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: src/dosage.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: src/database.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: src/performance.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: notebooks/eda.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: docker/Dockerfile",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: k8s/deployment.yaml",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: k8s/service.yaml",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: models/crop_disease_model.h5",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: models/class_names.json",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: frontend/index.html",
+      "status": "\u274c FAIL",
+      "details": ""
+    },
+    {
+      "name": "File exists: monitoring/dashboard.html",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: mlflow/mlflow_tracking.py",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: .github/workflows/ci-cd.yml",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: requirements.txt",
+      "status": "\u2705 PASS",
+      "details": ""
+    },
+    {
+      "name": "File exists: README.md",
+      "status": "\u2705 PASS",
+      "details": ""
+    }
+  ]
+}
