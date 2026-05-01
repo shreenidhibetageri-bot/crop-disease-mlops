@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CropAI — Monitoring Dashboard</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0f0a;
+    color: #e0f0e0;
+    min-height: 100vh;
+  }
+  .topbar {
+    background: #0d1a0d;
+    border-bottom: 1px solid #1a3a1a;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar h1 {
+    font-size: 20px;
+    color: #4caf50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .status-dot {
+    width: 10px; height: 10px;
+    background: #4caf50;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .topbar .time {
+    color: #6b8c6b;
+    font-size: 13px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 24px 32px 0;
+  }
+  .card {
+    background: #0d1a0d;
+    border: 1px solid #1a3a1a;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card .label {
+    font-size: 12px;
+    color: #6b8c6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .card .value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #4caf50;
+  }
+  .card .sub {
+    font-size: 12px;
+    color: #6b8c6b;
+    margin-top: 4px;
+  }
+  .card.blue .value { color: #2196f3; }
+  .card.orange .value { color: #ff9800; }
+  .card.red .value { color: #f44336; }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px 32px;
+  }
+  .chart-card {
+    background: #0d1a0d;
+    border: 1px solid #1a3a1a;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .chart-card h3 {
+    font-size: 14px;
+    color: #6b8c6b;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  canvas { width: 100% !important; }
+
+  .metrics-table {
+    margin: 0 32px 24px;
+    background: #0d1a0d;
+    border: 1px solid #1a3a1a;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .metrics-table h3 {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #6b8c6b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #1a3a1a;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 12px;
+    color: #6b8c6b;
+    border-bottom: 1px solid #1a3a1a;
+  }
+  td {
+    padding: 12px 20px;
+    font-size: 13px;
+    border-bottom: 1px solid #0f1f0f;
+  }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge.green { background: #1a3a1a; color: #4caf50; }
+  .badge.blue  { background: #0d2a3a; color: #2196f3; }
+  .badge.orange{ background: #2a1a0d; color: #ff9800; }
+
+  .refresh-btn {
+    display: block;
+    margin: 0 auto 24px;
+    padding: 10px 32px;
+    background: #1a3a1a;
+    color: #4caf50;
+    border: 1px solid #4caf50;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: #4caf50; color: #0a0f0a; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>
+    <div class="status-dot"></div>
+    🌿 CropAI Monitoring Dashboard
+  </h1>
+  <div class="time" id="clock">Loading...</div>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid">
+  <div class="card">
+    <div class="label">Model Accuracy</div>
+    <div class="value" id="accuracy">97.76%</div>
+    <div class="sub">EfficientNetB0 — Test Set</div>
+  </div>
+  <div class="card blue">
+    <div class="label">Total Requests</div>
+    <div class="value" id="totalReq">0</div>
+    <div class="sub">Since server started</div>
+  </div>
+  <div class="card">
+    <div class="label">Healthy Plants</div>
+    <div class="value" id="healthyCount">0</div>
+    <div class="sub">Detected as healthy</div>
+  </div>
+  <div class="card red">
+    <div class="label">Diseased Plants</div>
+    <div class="value" id="diseasedCount">0</div>
+    <div class="sub">Disease detected</div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <h3>📈 Requests Over Time</h3>
+    <canvas id="requestChart" height="200"></canvas>
+  </div>
+  <div class="chart-card">
+    <h3>🌿 Healthy vs Diseased</h3>
+    <canvas id="pieChart" height="200"></canvas>
+  </div>
+</div>
+
+<!-- Metrics Table -->
+<div class="metrics-table">
+  <h3>📊 System Metrics</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Value</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Model</td>
+        <td>EfficientNetB0</td>
+        <td><span class="badge green">Active</span></td>
+      </tr>
+      <tr>
+        <td>Test Accuracy</td>
+        <td>97.76%</td>
+        <td><span class="badge green">Excellent</span></td>
+      </tr>
+      <tr>
+        <td>Dataset</td>
+        <td>PlantVillage (54,306 images)</td>
+        <td><span class="badge green">Loaded</span></td>
+      </tr>
+      <tr>
+        <td>Classes</td>
+        <td>38 Disease Classes</td>
+        <td><span class="badge green">Ready</span></td>
+      </tr>
+      <tr>
+        <td>API Framework</td>
+        <td>FastAPI 2.0.0</td>
+        <td><span class="badge green">Running</span></td>
+      </tr>
+      <tr>
+        <td>Containerization</td>
+        <td>Docker</td>
+        <td><span class="badge green">Active</span></td>
+      </tr>
+      <tr>
+        <td>Orchestration</td>
+        <td>Kubernetes (2 Pods)</td>
+        <td><span class="badge green">Running</span></td>
+      </tr>
+      <tr>
+        <td>Experiment Tracking</td>
+        <td>MLflow 3.11.1</td>
+        <td><span class="badge green">Active</span></td>
+      </tr>
+      <tr>
+        <td>Monitoring</td>
+        <td>Prometheus + Custom Dashboard</td>
+        <td><span class="badge green">Active</span></td>
+      </tr>
+      <tr>
+        <td>API Status</td>
+        <td>http://localhost:8000</td>
+        <td><span class="badge blue">Online</span></td>
+      </tr>
+      <tr>
+        <td>Deployment</td>
+        <td>Production</td>
+        <td><span class="badge orange">Live</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<button class="refresh-btn" onclick="fetchMetrics()">🔄 Refresh Metrics</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+  // Clock
+  function updateClock() {
+    document.getElementById('clock').textContent =
+      'Last updated: ' + new Date().toLocaleTimeString();
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Request history
+  const reqHistory = Array(10).fill(0);
+  const labels = Array(10).fill('').map((_, i) => i + 's');
+
+  // Request Chart
+  const reqCtx = document.getElementById('requestChart').getContext('2d');
+  const reqChart = new Chart(reqCtx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Requests',
+        data: reqHistory,
+        borderColor: '#4caf50',
+        backgroundColor: 'rgba(76,175,80,0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#6b8c6b' }, grid: { color: '#1a3a1a' } },
+        y: { ticks: { color: '#6b8c6b' }, grid: { color: '#1a3a1a' }, beginAtZero: true }
+      }
+    }
+  });
+
+  // Pie Chart
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  const pieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Healthy', 'Diseased'],
+      datasets: [{
+        data: [0, 0],
+        backgroundColor: ['#4caf50', '#f44336'],
+        borderColor: '#0d1a0d',
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: '#6b8c6b' }
+        }
+      }
+    }
+  });
+
+  let prevTotal = 0;
+
+  async function fetchMetrics() {
+    try {
+      const res = await fetch('http://localhost:8000/metrics');
+      const text = await res.text();
+
+      // Parse metrics
+      const getVal = (name) => {
+        const match = text.match(new RegExp(name + '\\s+([\\d.]+)'));
+        return match ? parseFloat(match[1]) : 0;
+      };
+
+      const healthy  = getVal('crop_disease_healthy_total');
+      const diseased = getVal('crop_disease_diseased_total');
+      const accuracy = getVal('crop_disease_model_accuracy');
+      const total    = healthy + diseased;
+
+      // Update cards
+      document.getElementById('accuracy').textContent      = accuracy.toFixed(2) + '%';
+      document.getElementById('totalReq').textContent      = total;
+      document.getElementById('healthyCount').textContent  = healthy;
+      document.getElementById('diseasedCount').textContent = diseased;
+
+      // Update request chart
+      reqHistory.push(total - prevTotal);
+      reqHistory.shift();
+      prevTotal = total;
+      reqChart.data.datasets[0].data = [...reqHistory];
+      reqChart.update();
+
+      // Update pie chart
+      pieChart.data.datasets[0].data = [healthy || 1, diseased || 1];
+      pieChart.update();
+
+    } catch(e) {
+      console.log('API not connected:', e.message);
+    }
+  }
+
+  // Auto refresh every 5 seconds
+  fetchMetrics();
+  setInterval(fetchMetrics, 5000);
+</script>
+</body>
+</html>
